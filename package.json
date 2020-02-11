@@ -1,0 +1,49 @@
+{
+  "name": "bika",
+  "version": "0.0.1",
+  "description": "A CLI tool for keeping terminal commands",
+  "main": "index.js",
+  "bin": {
+    "bika": "index.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "test": "nyc mocha ./test/* --exit",
+    "fix-lint": "eslint . --fix"
+  },
+  "author": "Igwaneza Bruce <knowbeeinc@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.9",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.0.1",
+    "nyc": "^15.0.0"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "columnify": "^1.5.4",
+    "commander": "^4.1.1",
+    "figlet": "^1.2.4",
+    "fswin": "^3.19.908",
+    "inquirer": "^7.0.4"
+  },
+  "keywords": [
+    "commands",
+    "save commands",
+    "terminal"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knowbee/bika.git"
+  },
+  "bugs": {
+    "url": "https://github.com/knowbee/bika/issues"
+  },
+  "homepage": "https://github.com/knowbee/bika#readme"
+}
