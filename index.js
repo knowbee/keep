@@ -6,7 +6,7 @@ const {
 } = require("./lib/dir");
 const { askCommands, askCredentials } = require("./lib/cli");
 const { login, listcommand, newcommand, register } = require("./lib/api");
-
+const { isLoggedIn } = require("./lib/auth");
 const { helper } = require("./lib/help");
 const fs = require("fs");
 const columnify = require("columnify");
@@ -40,18 +40,24 @@ if (
     }
     if (cmd === "login" || cmd === "--login") {
       askCredentials().then(credentials => {
-        login(credentials);
+        login(credentials).then(result => {
+          fs.writeFileSync(
+            os.homedir() + "/.bika/.credentials.json",
+            JSON.stringify(result, null)
+          );
+        });
       });
     }
     if (cmd === "new" || cmd === "--n") {
-      askCommands().then(answers => {
-        const cmds = getcommands();
-        cmds.push(answers);
-        fs.writeFileSync(
-          os.homedir() + "/.commands/cmd.json",
-          JSON.stringify(cmds, null)
-        );
-      });
+      newcommand();
+      // askCommands().then(answers => {
+      //   const cmds = getcommands();
+      //   cmds.push(answers);
+      //   fs.writeFileSync(
+      //     os.homedir() + "/.commands/cmd.json",
+      //     JSON.stringify(cmds, null)
+      //   );
+      // });
     }
     if (cmd === "list" || cmd === "--l") {
       console.log("\n");
