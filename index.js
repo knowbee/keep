@@ -63,11 +63,30 @@ if (
         });
       });
     }
+    if (cmd === "fetch" || cmd === "--fetch") {
+      console.log("\n");
+      let data = [];
+      listcommand().then(result => {
+        const { commands } = result;
+        commands.forEach(cmd => {
+          data.push({ command: cmd.command, description: cmd.description });
+        });
+        fs.writeFileSync(
+          os.homedir() + "/.commands/cmd.json",
+          JSON.stringify(data, null)
+        );
+      });
+      console.log(log.yellow("fetching done"));
+    }
     if (cmd === "list" || cmd === "--l") {
       console.log("\n");
       const cmds = getcommands();
-      const columns = columnify(cmds);
-      console.log(log.yellow(columns));
+      if (cmds.length > 0) {
+        const columns = columnify(cmds);
+        console.log(log.yellow(columns));
+      } else {
+        console.log(log.yellow("no commands saved"));
+      }
     }
   });
 } else {
