@@ -49,15 +49,19 @@ if (
       });
     }
     if (cmd === "new" || cmd === "--n") {
-      newcommand();
-      // askCommands().then(answers => {
-      //   const cmds = getcommands();
-      //   cmds.push(answers);
-      //   fs.writeFileSync(
-      //     os.homedir() + "/.commands/cmd.json",
-      //     JSON.stringify(cmds, null)
-      //   );
-      // });
+      askCommands().then(answers => {
+        let cmds = getcommands();
+        newcommand(answers).then(result => {
+          cmds.push({
+            command: result.command,
+            description: result.description
+          });
+          fs.writeFileSync(
+            os.homedir() + "/.commands/cmd.json",
+            JSON.stringify(cmds, null)
+          );
+        });
+      });
     }
     if (cmd === "list" || cmd === "--l") {
       console.log("\n");
