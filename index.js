@@ -6,7 +6,6 @@ const {
 } = require("./lib/dir");
 const { askCommands, askCredentials } = require("./lib/cli");
 const { login, listcommand, newcommand, register } = require("./lib/api");
-const { isLoggedIn } = require("./lib/auth");
 const { helper } = require("./lib/help");
 const fs = require("fs");
 const columnify = require("columnify");
@@ -15,6 +14,7 @@ const os = require("os");
 const clear = require("clear");
 const figlet = require("figlet");
 const hide = require("fswin");
+const rimraf = require("rimraf");
 
 clear();
 console.log(log.magenta(figlet.textSync("bika", { horizontalLayout: "full" })));
@@ -77,6 +77,11 @@ if (
         );
       });
       console.log(log.yellow("fetching done"));
+    }
+    if (cmd === "logout" || cmd === "--logout") {
+      rimraf(getCredentialsDirectory(), function() {
+        console.log("done");
+      });
     }
     if (cmd === "list" || cmd === "--l") {
       console.log("\n");
