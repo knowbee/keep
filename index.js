@@ -4,7 +4,7 @@ const {
   getCredentialsDirectory,
   directoryExists
 } = require("./lib/dir");
-const { askCommands, askCredentials } = require("./lib/cli");
+const { askCommands, askCredentials, init } = require("./lib/cli");
 const { login, listcommand, newcommand, register } = require("./lib/api");
 const { helper } = require("./lib/help");
 const fs = require("fs");
@@ -175,25 +175,35 @@ if (
     }
   });
 } else {
-  if (!directoryExists(getCommandsDirectory())) {
-    spinner.start(log.green("initializing..."));
-    let cmd = [];
-    fs.mkdirSync(os.homedir() + "/.commands");
-    hide.setAttributesSync(os.homedir() + "/.commands", { IS_HIDDEN: true });
-    fs.writeFile(
-      os.homedir() + "/.commands/cmd.json",
-      JSON.stringify(cmd),
-      { flag: "wx" },
-      err => {
-        if (err) throw err;
-        spinner.succeed(log.green("keep initialized"));
-        spinner.stop();
+  if (
+    !directoryExists(getCommandsDirectory()) ||
+    !directoryExists(getCredentialsDirectory())
+  ) {
+    init().then(choice => {
+      const { commands } = choice;
+      if (commands) {
+        spinner.start(log.green("initializing..."));
+        let cmd = [];
+        fs.mkdirSync(os.homedir() + "/.commands");
+        hide.setAttributesSync(os.homedir() + "/.commands", {
+          IS_HIDDEN: true
+        });
+        fs.writeFile(
+          os.homedir() + "/.commands/cmd.json",
+          JSON.stringify(cmd),
+          { flag: "wx" },
+          err => {
+            if (err) throw err;
+            spinner.succeed(log.green("keep initialized"));
+            spinner.stop();
+          }
+        );
+        fs.mkdirSync(os.homedir() + "/.keep/");
+        hide.setAttributesSync(os.homedir() + "/.keep", { IS_HIDDEN: true });
+      } else {
+        process.exit(1);
       }
-    );
-  }
-  if (directoryExists(getCredentialsDirectory()) === false) {
-    fs.mkdirSync(os.homedir() + "/.keep/");
-    hide.setAttributesSync(os.homedir() + "/.keep", { IS_HIDDEN: true });
+    });
   }
 }
 function keepOffline() {
