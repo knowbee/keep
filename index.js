@@ -16,7 +16,8 @@ const figlet = require("figlet");
 const hide = require("fswin");
 const rimraf = require("rimraf");
 const { isLoggedIn } = require("./lib/auth");
-
+const ora = require("ora");
+const spinner = ora();
 clear();
 console.log(log.magenta(figlet.textSync("keep", { horizontalLayout: "full" })));
 const getcommands = () => {
@@ -54,7 +55,7 @@ if (
         require("dns").resolve("www.google.com", err => {
           if (err) {
             console.log("\n");
-            console.log("[offline]");
+            console.log(log.red("[offline]"));
             keepOffline();
           } else {
             askCommands().then(answers => {
@@ -73,7 +74,8 @@ if (
                   console.log(result.msg);
                   process.exit(1);
                 }
-                console.log("command is saved");
+                spinner.succeed(log.red("command is saved"));
+                spinner.stop();
               });
             });
           }
@@ -94,37 +96,44 @@ if (
             os.homedir() + "/.commands/cmd.json",
             JSON.stringify(data, null)
           );
-          console.log(log.yellow("fetching done"));
           process.exit(1);
         } catch (error) {
-          console.log("check your internet");
+          spinner.fail(log.green("check your internet"));
+          spinner.stop();
           process.exit(1);
         }
       });
     }
     if (cmd === "--sync" || cmd === "s") {
+      spinner.start("syncing with local machine with keep account..");
       let data = getcommands();
       if (data.length > 0) {
         try {
           data.forEach(d => {
             newcommand(d);
           });
-          console.log(log.yellow("sync is done"));
+          spinner.succeed(log.green("sync is done"));
+          spinner.stop();
         } catch (error) {
-          console.log("check your internet");
+          spinner.succeed(log.red("check your internet"));
+          spinner.stop();
           process.exit(1);
         }
       } else {
-        console.log("your local commands store is empty!");
+        spinner.succeed(log.red("your local commands store is empty!"));
+        spinner.stop();
         process.exit(1);
       }
     }
     if (cmd === "--logout" || cmd === "lo") {
+      spinner.start("removing local storage..");
       rimraf(getCommandsDirectory(), function() {
-        console.log("commands removed");
+        spinner.succeed(log.green("commands removed"));
+        spinner.stop();
       });
       rimraf(getCredentialsDirectory(), function() {
-        console.log("logged out!");
+        spinner.succeed(log.green("credentials removed"));
+        spinner.stop();
       });
     }
     if (cmd === "--list" || cmd === "li") {
@@ -132,13 +141,14 @@ if (
       const cmds = getcommands();
       if (cmds.length > 0) {
         const columns = columnify(cmds);
-        console.log(log.yellow(columns));
+        console.log(log.green(columns));
       } else {
-        console.log(log.yellow("no commands saved"));
+        spinner.succeed(log.green("no commands found"));
+        spinner.stop();
       }
     }
     if (cmd === "--search" || cmd === "find") {
-      console.log("\n");
+      spinner.start(log.green("searching..."));
       const cmds = getcommands();
       const query = process.argv[3];
       let match = [];
@@ -147,15 +157,26 @@ if (
         const description = cmds[i].description;
 
         if (command.includes(query) || description.includes(query)) {
-          match.push({ command, description });
+          match.push({
+            command,
+            description
+          });
         }
       }
-      const columns = columnify(match);
-      console.log(log.yellow(columns));
+      if (match.length > 0) {
+        spinner.succeed(log.magenta("matches found"));
+        spinner.stop();
+        const columns = columnify(match);
+        console.log(log.yellow(columns));
+      } else {
+        spinner.succeed(log.green("no matches found"));
+        spinner.stop();
+      }
     }
   });
 } else {
   if (!directoryExists(getCommandsDirectory())) {
+    spinner.start(log.green("initializing..."));
     let cmd = [];
     fs.mkdirSync(os.homedir() + "/.commands");
     hide.setAttributesSync(os.homedir() + "/.commands", { IS_HIDDEN: true });
@@ -165,7 +186,8 @@ if (
       { flag: "wx" },
       err => {
         if (err) throw err;
-        console.log("keep initialized!");
+        spinner.succeed(log.green("keep initialized"));
+        spinner.stop();
       }
     );
   }
@@ -182,6 +204,7 @@ function keepOffline() {
       os.homedir() + "/.commands/cmd.json",
       JSON.stringify(cmds, null)
     );
-    console.log("command is saved locally");
+    spinner.succeed(log.green("command is saved locally"));
+    spinner.stop();
   });
 }
