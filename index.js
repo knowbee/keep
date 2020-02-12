@@ -78,7 +78,7 @@ if (
       }
     }
     if (cmd === "fetch" || cmd === "--fetch") {
-      let data = getcommands();
+      let data = [];
       listcommand().then(result => {
         try {
           const { commands } = result;
@@ -122,15 +122,16 @@ if (
         const command = cmds[i].command;
         const description = cmds[i].description;
 
-        if (query === command || command.includes(query)) {
-          console.log(command);
-          match.push({ command, description });
-        }
-        if (description.includes(query)) {
+        if (
+          query === command ||
+          command.includes(query) ||
+          description.includes(query)
+        ) {
           match.push({ command, description });
         }
       }
-      console.log(match);
+      const columns = columnify(match);
+      console.log(log.yellow(columns));
     }
   });
 } else {
