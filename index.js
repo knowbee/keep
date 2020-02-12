@@ -18,7 +18,7 @@ const rimraf = require("rimraf");
 const { isLoggedIn } = require("./lib/auth");
 
 clear();
-console.log(log.magenta(figlet.textSync("bika", { horizontalLayout: "full" })));
+console.log(log.magenta(figlet.textSync("keep", { horizontalLayout: "full" })));
 const getcommands = () => {
   let cmds = fs.readFileSync(os.homedir() + "/.commands/cmd.json", "utf-8");
   if (!cmds) return [];
@@ -43,7 +43,7 @@ if (
       askCredentials().then(credentials => {
         login(credentials).then(result => {
           fs.writeFileSync(
-            os.homedir() + "/.bika/.credentials.json",
+            os.homedir() + "/.keep/.credentials.json",
             JSON.stringify(result, null)
           );
         });
@@ -66,22 +66,34 @@ if (
           });
         });
       } else {
+        askCommands().then(answers => {
+          let cmds = getcommands();
+          cmds.push(answers);
+          fs.writeFileSync(
+            os.homedir() + "/.commands/cmd.json",
+            JSON.stringify(cmds, null)
+          );
+          console.log("command is saved locally");
+        });
       }
     }
     if (cmd === "fetch" || cmd === "--fetch") {
-      console.log("\n");
-      let data = [];
+      let data = getcommands();
       listcommand().then(result => {
-        const { commands } = result;
-        commands.forEach(cmd => {
-          data.push({ command: cmd.command, description: cmd.description });
-        });
-        fs.writeFileSync(
-          os.homedir() + "/.commands/cmd.json",
-          JSON.stringify(data, null)
-        );
+        try {
+          const { commands } = result;
+          commands.forEach(cmd => {
+            data.push({ command: cmd.command, description: cmd.description });
+          });
+          fs.writeFileSync(
+            os.homedir() + "/.commands/cmd.json",
+            JSON.stringify(data, null)
+          );
+          console.log(log.yellow("fetching done"));
+        } catch (error) {
+          console.log("check your internet");
+        }
       });
-      console.log(log.yellow("fetching done"));
     }
     if (cmd === "logout" || cmd === "--logout") {
       rimraf(getCommandsDirectory(), function() {
@@ -103,7 +115,7 @@ if (
     }
   });
 } else {
-  if (directoryExists(getCommandsDirectory()) === false) {
+  if (!directoryExists(getCommandsDirectory())) {
     let cmd = [];
     fs.mkdirSync(os.homedir() + "/.commands");
     hide.setAttributesSync(os.homedir() + "/.commands", { IS_HIDDEN: true });
@@ -113,12 +125,12 @@ if (
       { flag: "wx" },
       err => {
         if (err) throw err;
-        console.log("bika initialized!");
+        console.log("keep initialized!");
       }
     );
   }
   if (directoryExists(getCredentialsDirectory()) === false) {
-    fs.mkdirSync(os.homedir() + "/.bika/");
-    hide.setAttributesSync(os.homedir() + "/.bika", { IS_HIDDEN: true });
+    fs.mkdirSync(os.homedir() + "/.keep/");
+    hide.setAttributesSync(os.homedir() + "/.keep", { IS_HIDDEN: true });
   }
 }
