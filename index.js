@@ -34,12 +34,12 @@ if (
 ) {
   helper();
   process.argv.slice(2).forEach(function(cmd) {
-    if (cmd === "register" || cmd === "--register") {
+    if (cmd === "--register" || cmd === "r") {
       askCredentials().then(credentials => {
         register(credentials);
       });
     }
-    if (cmd === "login" || cmd === "--login") {
+    if (cmd === "--login" || cmd === "l") {
       askCredentials().then(credentials => {
         login(credentials).then(result => {
           fs.writeFileSync(
@@ -49,7 +49,7 @@ if (
         });
       });
     }
-    if (cmd === "new" || cmd === "--n") {
+    if (cmd === "--new" || cmd === "n") {
       if (isLoggedIn()) {
         require("dns").resolve("www.google.com", err => {
           if (err) {
@@ -82,7 +82,7 @@ if (
         keepOffline();
       }
     }
-    if (cmd === "fetch" || cmd === "--fetch") {
+    if (cmd === "--fetch" || cmd === "f") {
       let data = [];
       listcommand().then(result => {
         try {
@@ -102,7 +102,7 @@ if (
         }
       });
     }
-    if (cmd === "sync" || cmd === "--sync") {
+    if (cmd === "--sync" || cmd === "s") {
       let data = getcommands();
       if (data.length > 0) {
         try {
@@ -119,7 +119,7 @@ if (
         process.exit(1);
       }
     }
-    if (cmd === "logout" || cmd === "--logout") {
+    if (cmd === "--logout" || cmd === "lo") {
       rimraf(getCommandsDirectory(), function() {
         console.log("commands removed");
       });
@@ -127,7 +127,7 @@ if (
         console.log("logged out!");
       });
     }
-    if (cmd === "list" || cmd === "--l") {
+    if (cmd === "--list" || cmd === "li") {
       console.log("\n");
       const cmds = getcommands();
       if (cmds.length > 0) {
@@ -137,7 +137,7 @@ if (
         console.log(log.yellow("no commands saved"));
       }
     }
-    if (cmd === "search" || cmd === "--s") {
+    if (cmd === "--search" || cmd === "find") {
       console.log("\n");
       const cmds = getcommands();
       const query = process.argv[3];
@@ -146,12 +146,12 @@ if (
         const command = cmds[i].command;
         const description = cmds[i].description;
 
-        if (
-          query === command ||
-          command.includes(query) ||
-          description.includes(query)
-        ) {
+        if (command.includes(query)) {
           match.push({ command, description });
+        } else {
+          if (description.includes(query)) {
+            match.push({ command, description });
+          }
         }
       }
       const columns = columnify(match);
