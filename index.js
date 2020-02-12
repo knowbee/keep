@@ -113,6 +113,25 @@ if (
         console.log(log.yellow("no commands saved"));
       }
     }
+    if (cmd === "search" || cmd === "--s") {
+      console.log("\n");
+      const cmds = getcommands();
+      const query = process.argv[3];
+      let match = [];
+      for (let i = 0; i < cmds.length; i++) {
+        const command = cmds[i].command;
+        const description = cmds[i].description;
+
+        if (query === command || command.includes(query)) {
+          console.log(command);
+          match.push({ command, description });
+        }
+        if (description.includes(query)) {
+          match.push({ command, description });
+        }
+      }
+      console.log(match);
+    }
   });
 } else {
   if (!directoryExists(getCommandsDirectory())) {
