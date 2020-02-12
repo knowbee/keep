@@ -54,14 +54,19 @@ if (
         askCommands().then(answers => {
           let cmds = getcommands();
           newcommand(answers).then(result => {
-            cmds.push({
-              command: result.command,
-              description: result.description
-            });
-            fs.writeFileSync(
-              os.homedir() + "/.commands/cmd.json",
-              JSON.stringify(cmds, null)
-            );
+            if (result.command) {
+              cmds.push({
+                command: result.command,
+                description: result.description
+              });
+              fs.writeFileSync(
+                os.homedir() + "/.commands/cmd.json",
+                JSON.stringify(cmds, null)
+              );
+            } else {
+              console.log(result.msg);
+              process.exit(1);
+            }
             console.log("command is saved");
           });
         });
@@ -94,6 +99,26 @@ if (
           console.log("check your internet");
         }
       });
+    }
+    if (cmd === "sync" || cmd === "--sync") {
+      let data = getcommands();
+      if (data.length > 0) {
+        data.forEach(d => {
+          newcommand(d).then(result => {
+            try {
+              data.push({
+                command: result.command,
+                description: result.description
+              });
+            } catch (error) {
+              console.log("check your internet");
+            }
+          });
+          console.log(log.yellow("fetching done"));
+        });
+      } else {
+        console.log("your local commands store is empty!");
+      }
     }
     if (cmd === "logout" || cmd === "--logout") {
       rimraf(getCommandsDirectory(), function() {
