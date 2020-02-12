@@ -32,7 +32,9 @@
     "fswin": "^3.19.908",
     "inquirer": "^7.0.4",
     "mocha": "^7.0.1",
-    "nyc": "^15.0.0"
+    "node-fetch": "^2.6.0",
+    "nyc": "^15.0.0",
+    "rimraf": "^3.0.2"
   },
   "keywords": [
     "commands",
@@ -47,8 +49,5 @@
     "url": "https://github.com/knowbee/bika/issues"
   },
   "homepage": "https://github.com/knowbee/bika#readme",
-  "dependencies": {
-    "node-fetch": "^2.6.0",
-    "rimraf": "^3.0.2"
-  }
+  "dependencies": {}
 }
