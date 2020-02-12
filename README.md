@@ -4,7 +4,7 @@
 
 ## Why?
 
-Keep solve the hustle of forgeting shell commands and having to always google/stackoverflow them wasting time
+Keep solves the hustle of forgeting shell commands and having to always google/stackoverflow them wasting your precious time 😉
 
 ## Features
 
@@ -36,16 +36,16 @@ yarn global add @knowbee/keep
 
     Options:
 
-      -V, --version  output the version number
-      --register     create new keep account
-      --login        login into your account
-      --logout       logout from your account
-      --new          keep a new command
-      --fetch        fetch commands from database
-      --list         list saved commands with description
-      --search       search for a specific command
-      --sync         sync your account with local storage
-      -h, --help     output usage information
+      --version,  -V      output the version number
+      --register,  r      create new keep account
+      --login,     l      login into your account
+      --logout ,   lo     logout from your account
+      --new        n      keep a new command
+      --fetch      f      fetch commands from database
+      --list       li     list saved commands with description
+      --search     s      search for a specific command
+      --sync              sync your account with local storage
+      -h, --help          output usage information
 
 ## Contribution
 

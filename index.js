@@ -104,7 +104,7 @@ if (
         }
       });
     }
-    if (cmd === "--sync" || cmd === "s") {
+    if (cmd === "--sync") {
       spinner.start("syncing with local machine with keep account..");
       let data = getcommands();
       if (data.length > 0) {
@@ -147,7 +147,7 @@ if (
         spinner.stop();
       }
     }
-    if (cmd === "--search" || cmd === "find") {
+    if (cmd === "--search" || cmd === "s") {
       spinner.start(log.green("searching..."));
       const cmds = getcommands();
       const query = process.argv[3];
