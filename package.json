@@ -1,5 +1,5 @@
 {
-  "name": "bika",
+  "name": "keep",
   "version": "0.0.1",
   "description": "A CLI tool for keeping terminal commands",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "node": ">= 10"
   },
   "bin": {
-    "bika": "index.js"
+    "keep": "index.js"
   },
   "scripts": {
     "lint": "eslint .",
@@ -43,11 +43,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/knowbee/bika.git"
+    "url": "git+https://github.com/knowbee/keep.git"
   },
   "bugs": {
-    "url": "https://github.com/knowbee/bika/issues"
+    "url": "https://github.com/knowbee/keep/issues"
   },
-  "homepage": "https://github.com/knowbee/bika#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/knowbee/keep#readme"
 }

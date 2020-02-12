@@ -146,12 +146,8 @@ if (
         const command = cmds[i].command;
         const description = cmds[i].description;
 
-        if (command.includes(query)) {
+        if (command.includes(query) || description.includes(query)) {
           match.push({ command, description });
-        } else {
-          if (description.includes(query)) {
-            match.push({ command, description });
-          }
         }
       }
       const columns = columnify(match);
