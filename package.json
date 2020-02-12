@@ -1,5 +1,5 @@
 {
-  "name": "keep",
+  "name": "@knowbee/keep",
   "version": "0.0.1",
   "description": "A CLI tool for keeping terminal commands",
   "main": "index.js",
@@ -20,14 +20,16 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chalk": "^3.0.0",
-    "clear": "^0.1.0",
-    "clui": "^0.3.6",
-    "columnify": "^1.5.4",
-    "commander": "^4.1.1",
     "coveralls": "^3.0.9",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
+  },
+  "dependencies": {
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "columnify": "^1.5.4",
+    "commander": "^4.1.1",
     "figlet": "^1.2.4",
     "fswin": "^3.19.908",
     "inquirer": "^7.0.4",
