@@ -15,6 +15,7 @@ const clear = require("clear");
 const figlet = require("figlet");
 const hide = require("fswin");
 const rimraf = require("rimraf");
+const { isLoggedIn } = require("./lib/auth");
 
 clear();
 console.log(log.magenta(figlet.textSync("bika", { horizontalLayout: "full" })));
@@ -49,19 +50,22 @@ if (
       });
     }
     if (cmd === "new" || cmd === "--n") {
-      askCommands().then(answers => {
-        let cmds = getcommands();
-        newcommand(answers).then(result => {
-          cmds.push({
-            command: result.command,
-            description: result.description
+      if (isLoggedIn()) {
+        askCommands().then(answers => {
+          let cmds = getcommands();
+          newcommand(answers).then(result => {
+            cmds.push({
+              command: result.command,
+              description: result.description
+            });
+            fs.writeFileSync(
+              os.homedir() + "/.commands/cmd.json",
+              JSON.stringify(cmds, null)
+            );
           });
-          fs.writeFileSync(
-            os.homedir() + "/.commands/cmd.json",
-            JSON.stringify(cmds, null)
-          );
         });
-      });
+      } else {
+      }
     }
     if (cmd === "fetch" || cmd === "--fetch") {
       console.log("\n");
