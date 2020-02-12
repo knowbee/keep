@@ -1,6 +1,6 @@
 {
   "name": "@knowbee/keep",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A CLI tool for keeping terminal commands",
   "main": "index.js",
   "engines": {
