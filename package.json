@@ -20,7 +20,9 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chalk": "^3.0.0",
+    "nyc": "^15.0.0",
     "coveralls": "^3.0.9",
+    "mocha": "^7.0.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1"
@@ -33,16 +35,17 @@
     "figlet": "^1.2.4",
     "fswin": "^3.19.908",
     "inquirer": "^7.0.4",
-    "mocha": "^7.0.1",
     "node-fetch": "^2.6.0",
-    "nyc": "^15.0.0",
     "ora": "^4.0.3",
     "rimraf": "^3.0.2"
   },
   "keywords": [
+    "keep",
+    "store commands",
     "commands",
     "save commands",
-    "terminal"
+    "terminal",
+    "shell"
   ],
   "repository": {
     "type": "git",
