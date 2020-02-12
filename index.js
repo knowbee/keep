@@ -62,6 +62,7 @@ if (
               os.homedir() + "/.commands/cmd.json",
               JSON.stringify(cmds, null)
             );
+            console.log("command is saved");
           });
         });
       } else {
@@ -83,8 +84,11 @@ if (
       console.log(log.yellow("fetching done"));
     }
     if (cmd === "logout" || cmd === "--logout") {
+      rimraf(getCommandsDirectory(), function() {
+        console.log("commands removed");
+      });
       rimraf(getCredentialsDirectory(), function() {
-        console.log("done");
+        console.log("logged out!");
       });
     }
     if (cmd === "list" || cmd === "--l") {
