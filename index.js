@@ -51,35 +51,35 @@ if (
     }
     if (cmd === "new" || cmd === "--n") {
       if (isLoggedIn()) {
-        askCommands().then(answers => {
-          let cmds = getcommands();
-          newcommand(answers).then(result => {
-            if (result.command) {
-              cmds.push({
-                command: result.command,
-                description: result.description
+        require("dns").resolve("www.google.com", err => {
+          if (err) {
+            console.log("\n");
+            console.log("[offline]");
+            keepOffline();
+          } else {
+            askCommands().then(answers => {
+              let cmds = getcommands();
+              newcommand(answers).then(result => {
+                if (result.command) {
+                  cmds.push({
+                    command: result.command,
+                    description: result.description
+                  });
+                  fs.writeFileSync(
+                    os.homedir() + "/.commands/cmd.json",
+                    JSON.stringify(cmds, null)
+                  );
+                } else {
+                  console.log(result.msg);
+                  process.exit(1);
+                }
+                console.log("command is saved");
               });
-              fs.writeFileSync(
-                os.homedir() + "/.commands/cmd.json",
-                JSON.stringify(cmds, null)
-              );
-            } else {
-              console.log(result.msg);
-              process.exit(1);
-            }
-            console.log("command is saved");
-          });
+            });
+          }
         });
       } else {
-        askCommands().then(answers => {
-          let cmds = getcommands();
-          cmds.push(answers);
-          fs.writeFileSync(
-            os.homedir() + "/.commands/cmd.json",
-            JSON.stringify(cmds, null)
-          );
-          console.log("command is saved locally");
-        });
+        keepOffline();
       }
     }
     if (cmd === "fetch" || cmd === "--fetch") {
@@ -95,29 +95,28 @@ if (
             JSON.stringify(data, null)
           );
           console.log(log.yellow("fetching done"));
+          process.exit(1);
         } catch (error) {
           console.log("check your internet");
+          process.exit(1);
         }
       });
     }
     if (cmd === "sync" || cmd === "--sync") {
       let data = getcommands();
       if (data.length > 0) {
-        data.forEach(d => {
-          newcommand(d).then(result => {
-            try {
-              data.push({
-                command: result.command,
-                description: result.description
-              });
-            } catch (error) {
-              console.log("check your internet");
-            }
+        try {
+          data.forEach(d => {
+            newcommand(d);
           });
-          console.log(log.yellow("fetching done"));
-        });
+          console.log(log.yellow("sync is done"));
+        } catch (error) {
+          console.log("check your internet");
+          process.exit(1);
+        }
       } else {
         console.log("your local commands store is empty!");
+        process.exit(1);
       }
     }
     if (cmd === "logout" || cmd === "--logout") {
@@ -178,4 +177,15 @@ if (
     fs.mkdirSync(os.homedir() + "/.keep/");
     hide.setAttributesSync(os.homedir() + "/.keep", { IS_HIDDEN: true });
   }
+}
+function keepOffline() {
+  askCommands().then(answers => {
+    let cmds = getcommands();
+    cmds.push(answers);
+    fs.writeFileSync(
+      os.homedir() + "/.commands/cmd.json",
+      JSON.stringify(cmds, null)
+    );
+    console.log("command is saved locally");
+  });
 }
