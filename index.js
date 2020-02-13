@@ -1,12 +1,25 @@
 #!/usr/bin/env node
+
 const {
   getCommandsDirectory,
   getCredentialsDirectory,
   directoryExists
 } = require("./lib/dir");
-const { askCommands, askCredentials, init } = require("./lib/cli");
-const { login, listcommand, newcommand, register } = require("./lib/api");
-const { helper } = require("./lib/help");
+const {
+  askCommands,
+  askCredentials,
+  init,
+  alert
+} = require("./lib/cli");
+const {
+  login,
+  listcommand,
+  newcommand,
+  register
+} = require("./lib/api");
+const {
+  helper
+} = require("./lib/help");
 const fs = require("fs");
 const columnify = require("columnify");
 const log = require("chalk");
@@ -15,11 +28,15 @@ const clear = require("clear");
 const figlet = require("figlet");
 const hide = require("fswin");
 const rimraf = require("rimraf");
-const { isLoggedIn } = require("./lib/auth");
+const {
+  isLoggedIn
+} = require("./lib/auth");
 const ora = require("ora");
 const spinner = ora();
 clear();
-console.log(log.magenta(figlet.textSync("keep", { horizontalLayout: "full" })));
+console.log(log.magenta(figlet.textSync("keep", {
+  horizontalLayout: "full"
+})));
 const getcommands = () => {
   let cmds = fs.readFileSync(os.homedir() + "/.commands/cmd.json", "utf-8");
   if (!cmds) return [];
@@ -34,7 +51,7 @@ if (
   directoryExists(getCredentialsDirectory())
 ) {
   helper();
-  process.argv.slice(2).forEach(function(cmd) {
+  process.argv.slice(2).forEach(function (cmd) {
     if (cmd === "--register" || cmd === "r") {
       askCredentials().then(credentials => {
         register(credentials);
@@ -88,9 +105,14 @@ if (
       let data = [];
       listcommand().then(result => {
         try {
-          const { commands } = result;
+          const {
+            commands
+          } = result;
           commands.forEach(cmd => {
-            data.push({ command: cmd.command, description: cmd.description });
+            data.push({
+              command: cmd.command,
+              description: cmd.description
+            });
           });
           fs.writeFileSync(
             os.homedir() + "/.commands/cmd.json",
@@ -126,15 +148,26 @@ if (
       }
     }
     if (cmd === "--logout" || cmd === "lo") {
-      spinner.start("removing local storage..");
-      rimraf(getCommandsDirectory(), function() {
-        spinner.succeed(log.green("commands removed"));
-        spinner.stop();
-      });
-      rimraf(getCredentialsDirectory(), function() {
-        spinner.succeed(log.green("credentials removed"));
-        spinner.stop();
-      });
+      alert().then(choice => {
+        const {
+          commands
+        } = choice
+        if (commands) {
+
+          spinner.start("removing local storage..");
+          rimraf(getCommandsDirectory(), function () {
+            spinner.succeed(log.green("commands removed"));
+            spinner.stop();
+          });
+          rimraf(getCredentialsDirectory(), function () {
+            spinner.succeed(log.green("credentials removed"));
+            spinner.stop();
+          });
+        } else {
+          spinner.warn("safety first, run keep --sync before you logout");
+          spinner.stop();
+        }
+      })
     }
     if (cmd === "--list" || cmd === "li") {
       console.log("\n");
@@ -180,7 +213,9 @@ if (
     !directoryExists(getCredentialsDirectory())
   ) {
     init().then(choice => {
-      const { commands } = choice;
+      const {
+        commands
+      } = choice;
       if (commands) {
         spinner.start(log.green("initializing..."));
         let cmd = [];
@@ -190,8 +225,9 @@ if (
         });
         fs.writeFile(
           os.homedir() + "/.commands/cmd.json",
-          JSON.stringify(cmd),
-          { flag: "wx" },
+          JSON.stringify(cmd), {
+            flag: "wx"
+          },
           err => {
             if (err) throw err;
             spinner.succeed(log.green("keep initialized"));
@@ -199,13 +235,16 @@ if (
           }
         );
         fs.mkdirSync(os.homedir() + "/.keep/");
-        hide.setAttributesSync(os.homedir() + "/.keep", { IS_HIDDEN: true });
+        hide.setAttributesSync(os.homedir() + "/.keep", {
+          IS_HIDDEN: true
+        });
       } else {
         process.exit(1);
       }
     });
   }
 }
+
 function keepOffline() {
   askCommands().then(answers => {
     let cmds = getcommands();
